@@ -9,7 +9,7 @@ const errorController = require('./controllers/error');
 app.use(cors());
 
 app.use((req, res, next) => {
-    console.log(req.method, req.url)
+    console.log(`request method : ${req.method} and request URL : ${req.url}`)
     next()
 })
 

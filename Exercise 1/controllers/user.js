@@ -30,7 +30,7 @@ exports.CreateUsers = (req, res, next) => {
         number: req.query.number
     };
     users.push(newUser);
-    res.status(201).json(newUser);
+    res.status(200).json(newUser);
 }
 
 //delete user
@@ -41,7 +41,7 @@ exports.deleteUserById = (req, res, next) => {
         return res.status(404).json({ message: 'User not found' });
     }
     const delUser = users.splice(userfound, 1);
-    res.status(204).send(delUser);
+    res.status(200).send(delUser);
 
 }
 
