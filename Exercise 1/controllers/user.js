@@ -10,6 +10,7 @@ let users = [
 
 let requests = [];
 let totalTime = 0;
+let totalAvgTime = 0;
 
 // Middleware to count every  request
 exports.countRequests = (req, res, next) => {
@@ -33,14 +34,16 @@ exports.getDurationInMilliseconds  = (start) => {
      
     const totalRequests = requests.length
 
-    totalTime = ((diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS)/totalRequests
+    totalTime +=((diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS)
+
+    totalAvgTime = totalTime/totalRequests
 
     return (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS
 }
 
 exports.getTotaltime = () => {
     return{
-        totalTime
+        totalAvgTime
     }
 }
 
