@@ -1,3 +1,5 @@
+const responseTime = require('response-time')
+
 let users = [
     { id: 1, name: "Rahul", age: 20, number: 1234567890 },
     { id: 2, name: "Vikram", age: 20, number: 1234567890 },
@@ -5,6 +7,42 @@ let users = [
     { id: 4, name: "Aakash", age: 20, number: 1234567890 },
     { id: 5, name: "Vikram", age: 20, number: 1234567890 }
 ];
+
+let requests = [];
+let totalTime = 0;
+
+// Middleware to count every  request
+exports.countRequests = (req, res, next) => {
+        requests.push({
+            method: req.method,
+            url: req.url,
+        });
+    next();
+};
+
+exports.getTotalAnalytics = () => {
+    return {
+        totalRequests: requests.length
+    };
+};
+
+exports.getDurationInMilliseconds  = (start) => {
+    const NS_PER_SEC = 1e9
+    const NS_TO_MS = 1e6
+    const diff = process.hrtime(start)
+     
+    const totalRequests = requests.length
+
+    totalTime = ((diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS)/totalRequests
+
+    return (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS
+}
+
+exports.getTotaltime = () => {
+    return{
+        totalTime
+    }
+}
 
 //get user 1
 exports.users1 = (req, res, next) => {
@@ -42,6 +80,5 @@ exports.deleteUserById = (req, res, next) => {
     }
     const delUser = users.splice(userfound, 1);
     res.status(200).send(delUser);
-
 }
 
