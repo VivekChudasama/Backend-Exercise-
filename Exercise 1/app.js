@@ -14,6 +14,10 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.send('welcome to webpage');
+})
+
 //get and log the start , finish , close time of the request
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.originalUrl} [STARTED]`)
@@ -32,18 +36,13 @@ app.use((req, res, next) => {
     next()
 })
 
-app.get('/', (req, res) => {
-    res.send('welcome to webpage');
-})
-
+app.use(userController.countRequests)
+app.use(userController.countindividualRequests)
 
 app.use(userRoutes)
 app.use(analyticsRoutes)
 
-app.use(userController.countRequests)
-app.use(userController.countindividualRequests)
 app.use(errorController.get404);
-
 
 const PORT = 3001;
 
