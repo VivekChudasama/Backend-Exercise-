@@ -1,109 +1,52 @@
-let users = [
-    { id: 1, name: "Rahul", age: 20, number: 1234567890 },
-    { id: 2, name: "Vikram", age: 20, number: 1234567890 },
-    { id: 3, name: "Rahul", age: 20, number: 1234567890 },
-    { id: 4, name: "Aakash", age: 20, number: 1234567890 },
-    { id: 5, name: "Vikram", age: 20, number: 1234567890 }
-];
+const userService = require('../services/user');
 
-let requests = [];
-let individualRequest = {};
-let totalTime = 0;
-let totalAvgTime = 0;
-
-// Middleware to count every  request
-exports.countRequests = (req, res, next) => {
-    let apiName = `${req.method} ${req.url}`;
-
-    requests.push({
-        apiName
-    });
-    next();
-};
-
-// Middleware to count every individual request
-exports.countindividualRequests = (req, res, next) => {
-    let apiName = `${req.method} ${req.url}`
-
-    if (!individualRequest[apiName]) {
-        individualRequest[apiName] = 0
+//get ALL users 
+exports.getUsers = (req, res, next) => {
+    try{
+        const users = userService.getAllUsers();
+        res.json(users);
     }
-
-    individualRequest[apiName] += 1
-
-    next();
-};
-
-//return the length of the array to get total request.
-exports.getTotalAnalytics = () => {
-    return {
-        totalRequests: requests.length
-    };
-};
-
-
-exports.getIndividualRequest = () => {
-    return {
-        individualRequest: individualRequest
+    catch(err){
+        console.log(err)
     }
-}
-
-//Middleware to count Average time
-exports.getDurationInMilliseconds = (start) => {
-    const NS_PER_SEC = 1e9
-    const NS_TO_MS = 1e6
-    const diff = process.hrtime(start)
-
-    const totalRequests = requests.length
-
-    totalTime += ((diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS)
-
-    totalAvgTime = totalTime / totalRequests
-
-    return (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS
-}
-
-exports.getTotaltime = () => {
-    return {
-        totalAvgTime
-    }
-}
-
-//get user 1
-exports.users1 = (req, res, next) => {
-    res.json(users[0])
 }
 
 //get user by id
 exports.getUserById = (req, res, next) => {
-    const userId = parseInt(req.params.id);
-    const user = users.find(u => u.id === userId);
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+    try{
+         const userId = parseInt(req.params.id);
+        const user = userService.findUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
     }
-    res.json(user);
-}
-
-//create user
-exports.CreateUsers = (req, res, next) => {
-    const newUser = {
-        id: users.length + 1,
-        name: req.query.name,
-        age: req.query.age,
-        number: req.query.number
-    };
-    users.push(newUser);
-    res.status(200).json(newUser);
-}
-
-//delete user
-exports.deleteUserById = (req, res, next) => {
-    const userId = parseInt(req.params.id);
-    const userfound = users.findIndex(u => u.id === userId);
-    if (userfound === -1) {
-        return res.status(404).json({ message: 'User not found' });
+    catch(err) {
+        console.log(err)
     }
-    const delUser = users.splice(userfound, 1);
-    res.status(200).send(delUser);
+   
 }
 
+// create a new user
+exports.createUser = (req, res, next) => {
+    try {
+        const { name, age, number } = req.query; 
+        const newUser = userService.CreateUser({ name, age, number });
+        res.status(201).json(newUser);
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+// delete user by id
+exports.deleteUser = (req, res, next) => {
+    try {
+        const userId = parseInt(req.params.id);
+        const deletedUser = userService.deleteUserById(userId);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(deletedUser);
+    } catch (err) {
+        console.log(err)
+    }
+}

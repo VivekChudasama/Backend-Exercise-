@@ -1,4 +1,4 @@
-const reqCount = require('./user')
+const reqCount = require('../services/analytics')
 
 exports.analytics = (req, res, next) => {
     res.json({
