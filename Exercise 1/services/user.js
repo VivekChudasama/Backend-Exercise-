@@ -1,22 +1,22 @@
 const users = [
     { id: 1, name: "Rahul", age: 20, number: 1234567890 },
     { id: 2, name: "Vikram", age: 20, number: 1234567890 },
-    { id: 3, name: "Rahul", age: 20, number: 1234567890 },
+    { id: 3, name: "R", age: 20, number: 1234567890 },
     { id: 4, name: "Aakash", age: 20, number: 1234567890 },
     { id: 5, name: "Vikram", age: 20, number: 1234567890 }
 ];
 
-// Get all users
+// Get all users logic
 exports.getAllUsers = () => {
     return users;
 };
 
-// Get a single user by ID
+// Get a single user by ID logic
 exports.findUserById = (id) => {
     return users.find(u => u.id === id);
 };
 
-//create user
+//create user logic
 exports.CreateUser = (userData) => {
     const newUser = {
         id: users.length + 1,
@@ -26,7 +26,7 @@ exports.CreateUser = (userData) => {
     return newUser;
 }
 
-//delete user
+//delete user logic
 exports.deleteUserById = (id) => {
     const index = users.findIndex(u => u.id === id);
     if (index === -1) return null;
